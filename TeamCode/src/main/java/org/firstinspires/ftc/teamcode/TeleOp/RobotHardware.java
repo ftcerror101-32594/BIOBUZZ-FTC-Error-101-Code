@@ -1,9 +1,10 @@
 // RobotHardware class essentially describes/states inventory and parts of robot
 // RobotHardware class also acts as a library where changes can update to all classes
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.TeleOp;
 
 // DC Motor Extension allows for advanced controls such as velocity control
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
 public class RobotHardware {
@@ -17,14 +18,14 @@ public class RobotHardware {
     public void init(HardwareMap hardwareMap) {
         // Setting the variables and shortened terms as basically, an ID
         leftFront = hardwareMap.get(DcMotorEx.class, "LF");
-        rightFront = hardwareMap.get(DcMotorEx.class, "RF");
         leftRear = hardwareMap.get(DcMotorEx.class, "LR");
+        rightFront = hardwareMap.get(DcMotorEx.class, "RF");
         rightRear = hardwareMap.get(DcMotorEx.class, "RR");
 
-        // Sets the movement direction of motors; different because of mirroring
+        // Sets the movement direction of motors
         leftFront.setDirection(DcMotorEx.Direction.FORWARD);
         leftRear.setDirection(DcMotorEx.Direction.FORWARD);
-        rightFront.setDirection(DcMotorEx.Direction.REVERSE);
+        rightFront.setDirection(DcMotorEx.Direction.FORWARD);
         rightRear.setDirection(DcMotorEx.Direction.REVERSE);
 
         // Tells the motors to lock/brake position to prevent stray movement when motor off

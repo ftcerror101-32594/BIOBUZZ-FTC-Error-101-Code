@@ -1,8 +1,13 @@
 // This is the main java class for the TeleOp controller-based code of the robot
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 @TeleOp(name = "TeleOp Main")
 public class TeleOpMain extends LinearOpMode {
@@ -11,9 +16,15 @@ public class TeleOpMain extends LinearOpMode {
     @Override
     public void runOpMode() {
         robot.init(hardwareMap);
-
         telemetry.addData("Robot Initialized:", "True");
         telemetry.update();
+
+        // IMU: moved here from after waitForStart()
+        IMU imu = hardwareMap.get(IMU.class, "imu");
+        imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(
+                RevHubOrientationOnRobot.LogoFacingDirection.UP,     // match YOUR hub mounting
+                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)));
+        imu.resetYaw();
 
         waitForStart();
 
@@ -29,6 +40,9 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Left Joystick Y:", leftJoystickY);
             telemetry.addData("Right Joystick X:", rightJoystickX);
 
+            // IMU: read heading so you can see it working
+            telemetry.addData("IMU Heading (deg)", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+
             leftJoystickY = -(leftJoystickY); // invert y-axis (forward= +, backward= -)
 
             if (Math.abs(leftJoystickX) < 0.10) { // create deadzone for x-axis
@@ -41,9 +55,17 @@ public class TeleOpMain extends LinearOpMode {
                 rightJoystickX = 0;
             }
 
-            double defaultSpeed = 0.75;
-            double motorPower = leftJoystickY * defaultSpeed;
-            double strafePower = leftJoystickX * defaultSpeed;
+            // IMU: field-centric. Rotate joystick vector by -heading
+            if (gamepad1.options) { // IMU: press with robot facing AWAY from you to re-zero
+                imu.resetYaw();
+            }
+            double botHeading = imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
+            double rotX = leftJoystickX * Math.cos(-botHeading) - leftJoystickY * Math.sin(-botHeading);
+            double rotY = leftJoystickX * Math.sin(-botHeading) + leftJoystickY * Math.cos(-botHeading);
+
+            double defaultSpeed = 1.0;
+            double motorPower = rotY * defaultSpeed;   // IMU: was leftJoystickY
+            double strafePower = rotX * defaultSpeed;  // IMU: was leftJoystickX
             double turnPower = rightJoystickX * defaultSpeed;
 
             // motor power (straight) stays same; aka constant
@@ -61,10 +83,10 @@ public class TeleOpMain extends LinearOpMode {
             telemetry.addData("Right Rear Speed", rightRearSpeed);
 
             //String[] motorArray = {"Left Front", "Right Front",
-                                    //"Left Rear", "Right Rear"};
+            //"Left Rear", "Right Rear"};
 
             //double[] motorSpeedArray = {leftFrontSpeed, rightFrontSpeed,
-                                        //leftRearSpeed, rightRearSpeed};
+            //leftRearSpeed, rightRearSpeed};
 
             // Compares max powers to see which motor requires most speed
             double maxPower = Math.max(1.0, Math.max(
@@ -83,6 +105,8 @@ public class TeleOpMain extends LinearOpMode {
             robot.rightFront.setPower(rightFrontSpeed);
             robot.leftRear.setPower(leftRearSpeed);
             robot.rightRear.setPower(rightRearSpeed);
+
+            telemetry.update(); // IMU: without this, no telemetry (including heading) shows
         }
 
     }
