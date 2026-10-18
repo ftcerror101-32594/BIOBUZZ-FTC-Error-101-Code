@@ -1,6 +1,6 @@
 // This is the main java class for the TeleOp controller-based code of the robot
 package org.firstinspires.ftc.teamcode.TeleOp;
-// v6.1
+// v6.2
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -22,8 +22,8 @@ public class TeleOpMain extends LinearOpMode {
         // IMU: moved here from after waitForStart()
         IMU imu = hardwareMap.get(IMU.class, "imu");
         imu.initialize(new IMU.Parameters(new RevHubOrientationOnRobot(
-                RevHubOrientationOnRobot.LogoFacingDirection.UP,     // match YOUR hub mounting
-                RevHubOrientationOnRobot.UsbFacingDirection.FORWARD)));
+                RevHubOrientationOnRobot.LogoFacingDirection.LEFT,     // match YOUR hub mounting
+                RevHubOrientationOnRobot.UsbFacingDirection.UP)));
         imu.resetYaw();
 
         waitForStart();
