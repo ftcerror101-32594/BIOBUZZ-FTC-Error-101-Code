@@ -8,6 +8,7 @@ public class Constants {
         // return new Follower(Drivetrain, Localizer, Foresight);
         return null;
     }
+    // mecanum config day 1
 
     public static MecanumConfig drivetrainConfig = new MecanumConfig(c -> {
         c.frontLeftName.set("LF");
