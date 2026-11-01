@@ -1,6 +1,10 @@
-# BIOBUZZ FTC Error 101
+<div align="center">
+  <img src="doc/media/banner.svg" alt="FTC ERROR 101 BIOBUZZ" style="border-radius: 12px;" />
+</div>
 
-Welcome to the BIOBUZZ FTC Error 101 team repository. This project contains the code used to build and operate our FIRST Tech Challenge robot for the 2026-2027 competition season.
+<h1 align="center">Welcome to the BIOBUZZ FTC Error 101 team repository!</h1>
+
+This project contains the code used to build and operate our FIRST Tech Challenge robot for the 2026-2027 competition season.
 
 This repo is based on the official FTC SDK and includes both the standard FTC framework and our team-specific code for robot control, autonomous routines, teleop behavior, and tuning.
 
