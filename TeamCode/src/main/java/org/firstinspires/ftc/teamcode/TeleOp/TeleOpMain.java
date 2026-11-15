@@ -1,6 +1,6 @@
 // This is the main java class for the TeleOp controller-based code of the robot
 package org.firstinspires.ftc.teamcode.TeleOp;
-// v6.3 - new bot code v1 update
+// v6.4 - new bot code v1 update
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -75,8 +75,8 @@ public class TeleOpMain extends LinearOpMode {
             double rotY = leftJoystickX * Math.sin(-botHeading) + leftJoystickY * Math.cos(-botHeading);
 
             double defaultSpeed = 1.0;
-            double motorPower = rotY * defaultSpeed;   // IMU: was leftJoystickY
-            double strafePower = rotX * defaultSpeed;  // IMU: was leftJoystickX
+            double motorPower = -rotY * defaultSpeed;
+            double strafePower = rotX * defaultSpeed;
             double turnPower = rightJoystickX * defaultSpeed;
 
             // motor power (straight) stays same; aka constant
