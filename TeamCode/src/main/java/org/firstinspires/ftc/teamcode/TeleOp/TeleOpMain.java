@@ -1,6 +1,6 @@
 // This is the main java class for the TeleOp controller-based code of the robot
 package org.firstinspires.ftc.teamcode.TeleOp;
-// v6.4 - new bot code v1 update
+// v7.0
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -35,8 +35,8 @@ public class TeleOpMain extends LinearOpMode {
             double leftJoystickY = gamepad1.left_stick_y; // sideways/strafe drive
             double rightJoystickX = gamepad1.right_stick_x; // turn
 
-            double G2LeftTrigger = gamepad2.right_trigger; // bottom intake
-            double G2RightTrigger = gamepad2.left_trigger; // top intake
+            double G2LeftTrigger = gamepad2.right_trigger;
+            double G2RightTrigger = gamepad2.left_trigger;
 
             // debug statements to report current joystick push headings
             telemetry.addData("Left Joystick X:", leftJoystickX);
@@ -59,12 +59,14 @@ public class TeleOpMain extends LinearOpMode {
             if (Math.abs(rightJoystickX) < 0.10) { // create deadzone for x-axis
                 rightJoystickX = 0;
             }
+            /*
             if (G2LeftTrigger < 0.1) { // create deadzone for gamepad 2 L. Trigger
                 G2LeftTrigger = 0;
             }
             if (G2RightTrigger < 0.1) { // create deadzone for gamepad 2 R. Trigger
                 G2RightTrigger = 0;
             }
+             */
 
             // IMU: field-centric. Rotate joystick vector by -heading
             if (gamepad1.options) { // IMU: press with robot facing AWAY from you to re-zero
@@ -115,10 +117,22 @@ public class TeleOpMain extends LinearOpMode {
             robot.rightFront.setPower(rightFrontSpeed);
             robot.leftRear.setPower(leftRearSpeed);
             robot.rightRear.setPower(rightRearSpeed);
-            //robot.bottomIntake.setPower(bottomIntakeSpeed);
-            //robot.topIntake.setPower(topIntakeSpeed);
 
             // Trigger logic
+
+            // Intake at press of button logic
+            if (gamepad2.a) {
+                robot.intake.setPower(0.50);
+            }
+            if (gamepad2.b) {
+                robot.intake.setPower(0);
+            }
+
+            /*
+            if (gamepad1.right_trigger > 0.1) {
+                robot.intake.setPower(1.0);
+            }
+            */
 
             telemetry.update(); // IMU: without this, no telemetry (including heading) shows
         }
