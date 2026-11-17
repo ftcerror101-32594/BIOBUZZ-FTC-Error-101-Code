@@ -1,6 +1,6 @@
 // This is the main java class for the TeleOp controller-based code of the robot
 package org.firstinspires.ftc.teamcode.TeleOp;
-// v7.0
+// v8.0
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -118,21 +118,39 @@ public class TeleOpMain extends LinearOpMode {
             robot.leftRear.setPower(leftRearSpeed);
             robot.rightRear.setPower(rightRearSpeed);
 
-            // Trigger logic
+            // Intake and transfer logic (at button press)
 
-            // Intake at press of button logic
-            if (gamepad2.a) {
-                robot.intake.setPower(0.50);
-            }
-            if (gamepad2.b) {
+            if (gamepad2.aWasPressed()) {
+                robot.intake.setPower(-1.0);
+            } else if (gamepad2.aWasReleased()) {
                 robot.intake.setPower(0);
             }
 
-            /*
-            if (gamepad1.right_trigger > 0.1) {
+            if (gamepad2.bWasPressed()) {
                 robot.intake.setPower(1.0);
+            } else if (gamepad2.bWasReleased()) {
+                robot.intake.setPower(0);
             }
-            */
+
+            if (gamepad2.xWasPressed()) {
+                robot.transfer.setPower(-1.0);
+            } else if (gamepad2.xWasReleased()) {
+                robot.transfer.setPower(0);
+            }
+
+            if (gamepad2.yWasPressed()) {
+                robot.transfer.setPower(1.0);
+            } else if (gamepad2.yWasReleased()) {
+                robot.transfer.setPower(0);
+            }
+
+
+            // Garden flowers bumper buttons logic
+            if (gamepad2.right_bumper) {
+                robot.gardenServo.setPosition(1.0);
+            } else if (gamepad2.left_bumper) {
+                robot.gardenServo.setPosition(0.0);
+            }
 
             telemetry.update(); // IMU: without this, no telemetry (including heading) shows
         }
