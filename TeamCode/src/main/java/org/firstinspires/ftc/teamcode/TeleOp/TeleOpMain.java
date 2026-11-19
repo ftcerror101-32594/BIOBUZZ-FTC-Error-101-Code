@@ -1,6 +1,6 @@
 // This is the main java class for the TeleOp controller-based code of the robot
 package org.firstinspires.ftc.teamcode.TeleOp;
-// v6.2
+// v8.0
 
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -31,9 +31,12 @@ public class TeleOpMain extends LinearOpMode {
         while (opModeIsActive()) {
             // Sets up joystick & corr. motor movement for DRIVE controller
 
-            double leftJoystickX = gamepad1.left_stick_x;
-            double leftJoystickY = gamepad1.left_stick_y;
-            double rightJoystickX = gamepad1.right_stick_x;
+            double leftJoystickX = gamepad1.left_stick_x; // straight drive
+            double leftJoystickY = gamepad1.left_stick_y; // sideways/strafe drive
+            double rightJoystickX = gamepad1.right_stick_x; // turn
+
+            double G2LeftTrigger = gamepad2.right_trigger;
+            double G2RightTrigger = gamepad2.left_trigger;
 
             // debug statements to report current joystick push headings
             telemetry.addData("Left Joystick X:", leftJoystickX);
@@ -42,6 +45,8 @@ public class TeleOpMain extends LinearOpMode {
 
             // IMU: read heading so you can see it working
             telemetry.addData("IMU Heading (deg)", imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.DEGREES));
+
+            // Deadzone logic
 
             leftJoystickY = -(leftJoystickY); // invert y-axis (forward= +, backward= -)
 
@@ -54,6 +59,14 @@ public class TeleOpMain extends LinearOpMode {
             if (Math.abs(rightJoystickX) < 0.10) { // create deadzone for x-axis
                 rightJoystickX = 0;
             }
+            /*
+            if (G2LeftTrigger < 0.1) { // create deadzone for gamepad 2 L. Trigger
+                G2LeftTrigger = 0;
+            }
+            if (G2RightTrigger < 0.1) { // create deadzone for gamepad 2 R. Trigger
+                G2RightTrigger = 0;
+            }
+             */
 
             // IMU: field-centric. Rotate joystick vector by -heading
             if (gamepad1.options) { // IMU: press with robot facing AWAY from you to re-zero
@@ -64,8 +77,8 @@ public class TeleOpMain extends LinearOpMode {
             double rotY = leftJoystickX * Math.sin(-botHeading) + leftJoystickY * Math.cos(-botHeading);
 
             double defaultSpeed = 1.0;
-            double motorPower = rotY * defaultSpeed;   // IMU: was leftJoystickY
-            double strafePower = rotX * defaultSpeed;  // IMU: was leftJoystickX
+            double motorPower = -rotY * defaultSpeed;
+            double strafePower = rotX * defaultSpeed;
             double turnPower = rightJoystickX * defaultSpeed;
 
             // motor power (straight) stays same; aka constant
@@ -76,17 +89,16 @@ public class TeleOpMain extends LinearOpMode {
             double leftRearSpeed = motorPower - strafePower + turnPower;
             double rightRearSpeed = motorPower + strafePower - turnPower;
 
+            double bottomIntakeSpeed = G2LeftTrigger * defaultSpeed; // right trigger for bottom intake
+            double topIntakeSpeed = G2RightTrigger * defaultSpeed; // left trigger for top intake
+
             // debug statements to report final motor powers
             telemetry.addData("Left Front Speed", leftFrontSpeed);
             telemetry.addData("Right Front Speed", rightFrontSpeed);
             telemetry.addData("Left Rear Speed", leftRearSpeed);
             telemetry.addData("Right Rear Speed", rightRearSpeed);
-
-            //String[] motorArray = {"Left Front", "Right Front",
-            //"Left Rear", "Right Rear"};
-
-            //double[] motorSpeedArray = {leftFrontSpeed, rightFrontSpeed,
-            //leftRearSpeed, rightRearSpeed};
+            telemetry.addData("Bottom Intake Speed", bottomIntakeSpeed);
+            telemetry.addData("Top Intake Speed", topIntakeSpeed);
 
             // Compares max powers to see which motor requires most speed
             double maxPower = Math.max(1.0, Math.max(
@@ -105,6 +117,40 @@ public class TeleOpMain extends LinearOpMode {
             robot.rightFront.setPower(rightFrontSpeed);
             robot.leftRear.setPower(leftRearSpeed);
             robot.rightRear.setPower(rightRearSpeed);
+
+            // Intake and transfer logic (at button press)
+
+            if (gamepad2.aWasPressed()) {
+                robot.intake.setPower(-1.0);
+            } else if (gamepad2.aWasReleased()) {
+                robot.intake.setPower(0);
+            }
+
+            if (gamepad2.bWasPressed()) {
+                robot.intake.setPower(1.0);
+            } else if (gamepad2.bWasReleased()) {
+                robot.intake.setPower(0);
+            }
+
+            if (gamepad2.xWasPressed()) {
+                robot.transfer.setPower(-1.0);
+            } else if (gamepad2.xWasReleased()) {
+                robot.transfer.setPower(0);
+            }
+
+            if (gamepad2.yWasPressed()) {
+                robot.transfer.setPower(1.0);
+            } else if (gamepad2.yWasReleased()) {
+                robot.transfer.setPower(0);
+            }
+
+
+            // Garden flowers bumper buttons logic
+            if (gamepad2.right_bumper) {
+                robot.gardenServo.setPosition(1.0);
+            } else if (gamepad2.left_bumper) {
+                robot.gardenServo.setPosition(0.0);
+            }
 
             telemetry.update(); // IMU: without this, no telemetry (including heading) shows
         }
