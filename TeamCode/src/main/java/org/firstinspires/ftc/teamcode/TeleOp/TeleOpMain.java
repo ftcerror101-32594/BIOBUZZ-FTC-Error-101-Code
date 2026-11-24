@@ -147,9 +147,9 @@ public class TeleOpMain extends LinearOpMode {
 
             // Garden flowers bumper buttons logic
             if (gamepad2.right_bumper) {
-                robot.gardenServo.setPosition(1.0);
+                robot.gardenServo.setPosition(2.0); // Changed from 1.0 to 2.0
             } else if (gamepad2.left_bumper) {
-                robot.gardenServo.setPosition(0.0);
+                robot.gardenServo.setPosition(0.5 );
             }
 
             telemetry.update(); // IMU: without this, no telemetry (including heading) shows
