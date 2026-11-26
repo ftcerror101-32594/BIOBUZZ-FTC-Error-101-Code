@@ -1,3 +1,5 @@
+package org.firstinspires.ftc.teamcode.pedro;
+
 import static com.pedropathing.api.Paths.*;
 import com.pedropathing.api.Paths;
 
@@ -6,7 +8,7 @@ import com.pedropathing.math.Pose;
 import com.pedropathing.paths.Path;
 import com.pedropathing.paths.interpolator.Interpolator;
 
-public class Paths {
+public class RedPathBasic {
 
     private final PoseFactory poseFactory = PoseFactory.degrees();
 

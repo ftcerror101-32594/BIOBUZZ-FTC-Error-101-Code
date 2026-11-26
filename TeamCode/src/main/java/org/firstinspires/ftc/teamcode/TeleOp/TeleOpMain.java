@@ -77,7 +77,7 @@ public class TeleOpMain extends LinearOpMode {
             double rotY = leftJoystickX * Math.sin(-botHeading) + leftJoystickY * Math.cos(-botHeading);
 
             double defaultSpeed = 1.0;
-            double motorPower = -rotY * defaultSpeed;
+            double motorPower = rotY * defaultSpeed;
             double strafePower = rotX * defaultSpeed;
             double turnPower = rightJoystickX * defaultSpeed;
 
@@ -92,13 +92,14 @@ public class TeleOpMain extends LinearOpMode {
             double bottomIntakeSpeed = G2LeftTrigger * defaultSpeed; // right trigger for bottom intake
             double topIntakeSpeed = G2RightTrigger * defaultSpeed; // left trigger for top intake
 
-            // debug statements to report final motor powers
+            // debug statements to report final motor powers & servo positions
             telemetry.addData("Left Front Speed", leftFrontSpeed);
             telemetry.addData("Right Front Speed", rightFrontSpeed);
             telemetry.addData("Left Rear Speed", leftRearSpeed);
             telemetry.addData("Right Rear Speed", rightRearSpeed);
             telemetry.addData("Bottom Intake Speed", bottomIntakeSpeed);
             telemetry.addData("Top Intake Speed", topIntakeSpeed);
+            telemetry.addData("Garden Servo Position", "%.2f", robot.gardenServo.getPosition());
 
             // Compares max powers to see which motor requires most speed
             double maxPower = Math.max(1.0, Math.max(
@@ -147,9 +148,9 @@ public class TeleOpMain extends LinearOpMode {
 
             // Garden flowers bumper buttons logic
             if (gamepad2.right_bumper) {
-                robot.gardenServo.setPosition(1.0);
+                robot.gardenServo.setPosition(-4.5);
             } else if (gamepad2.left_bumper) {
-                robot.gardenServo.setPosition(0.0);
+                robot.gardenServo.setPosition(0.5);
             }
 
             telemetry.update(); // IMU: without this, no telemetry (including heading) shows
